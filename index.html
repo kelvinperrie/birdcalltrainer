@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content="Train yourself to identify bird calls of New Zealand."/>
+    <meta name="keywords" content="birds, bird calls, training, new zealand birds"/>
+    <meta name="twitter:card" content="summary"></meta>
+    <meta property="og:title" content="Bird Call Trainer"/>
+    <meta property="og:description" content="Train yourself to identify bird calls of New Zealand." />
+    <!-- <meta property="og:image" content="https://birdsoundsci.netlify.app/images/twitter-card.png" /> -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none';default-src 'self' 'unsafe-eval'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' birdsoundsci.netlify.app;"> -->
+    <link rel="icon" href="favicon.png">
+    <!-- <link rel="stylesheet" href="libraries/bootstrap-4.3.1-dist/css/bootstrap.min.css" type="text/css"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css" type="text/css">
+    <style>
+      .available-sound{
+        margin-top: 1em;
+        margin-bottom: 1em;
+        padding: .5em 1em;
+        background-color: aliceblue;
+        cursor: pointer;
+      }
+      .selected {
+        border-color: yellow;
+      }
+      .incorrect-answer {
+        border-color: red;
+      }
+      .correct-answer {
+        border-color: green;
+      }
+      button {
+        cursor: pointer;
+      }
+    </style>
+    <title>NZ Bird Call Trainer</title>
+    <script defer src="scripts/soundconfig.js"></script>
+    <script defer src="scripts/alpine.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <div class="page-container text-center" x-data="pageModel">
+      <div class="external-links-container">
+        <a href="https://github.com/kelvinperrie/birdcalltrainer" target="_blank"><img class="github-link" src="images/GitHub-Mark-32px.png" alt="github icon" title="see the source on Github" /></a>
+      </div>
+      <header>
+        <h1>Bird Call Trainer</h1>
+        Use this site to learn how to tell apart different NZ bird calls.
+      </header>
+      Select the bird calls you want to learn to tell apart:
+      <div class="flex justify-center space-x-4 items-stretch ">
+        <template x-for="item in availableBirdSounds" :key="item.label">
+          <span x-init="item.init()" class="available-sound border-solid border-4 border-gray-500 rounded-md" x-text="item.label" @click="item.toggleSelected(); checkIfCanStart()" :class="item.selected ? 'selected' : ''"></span>
+        </template>
+      </div>
+      <div class="mt-10">
+        <button @click="startTraining()" x-bind:disabled="!readyToStart" class="bg-blue-500 enabled:hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-500" x-text="playSoundButtonText">!!!!</button>
+        <br/>
+        <span x-show="availableBirdSounds.filter((birdSounds) => birdSounds.selected).length < 2">(select at least two birds to start!)</span>
+        <br/>
+      </div>
+      <div x-show="showAnswerSelections" class="mt-10">
+        Pick the bird you think makes this sound:
+        <div class="flex justify-center space-x-4 items-stretch">
+          <template x-for="item in birdsToTrainWith" :key="item.label">
+            <span class="available-sound border-solid border-4 border-white rounded-md" x-text="item.label" @click="makeChoice(item)" :class="[item.markAsIncorrectAnswer ? 'incorrect-answer' : '',item.markAsCorrectAnswer ? 'correct-answer' : '']" ></span>
+          </template>
+        </div>
+      </div>
+    </div>
+    <script>
+
+    </script>
+    <script src="scripts/jquery-3.3.1.min.js"></script>
+    <script src="scripts/howler.js"></script>
+    <script src="scripts/birdcalltrainer.js"></script>
+  </body>
+</html>
