@@ -30,4 +30,13 @@ header {
   bottom: 2px;
 }
 
+.choice-feedback {
+  font-size: 25px;
+}
+.choice-feedback-right {
+  color: green;
+}
+.choice-feedback-wrong {
+  color: red;
+}
 

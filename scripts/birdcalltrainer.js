@@ -5,6 +5,38 @@
           return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); // The maximum is inclusive and the minimum is inclusive
         }
 
+        function birdStatistic(label, rightCount, wrongCount) {
+          return {
+            label: label,
+            correct: rightCount,
+            incorrect: wrongCount,
+            addCorrect() {
+              this.correct = this.correct + 1;
+            },
+            addIncorrect() {
+              this.incorrect = this.incorrect + 1;
+            }
+          }
+        }
+
+        function statisticsModel() {
+          return {
+            birdStatistics : [],
+            updateBirdStats(label, rightIncrease, wrongIncrease) {
+              console.log("we're going to update the stats for " + label);
+              let statsToUpdate = this.birdStatistics.find(item => item.label == label);
+              console.log(statsToUpdate)
+              if(statsToUpdate) {
+                if(rightIncrease > 0) statsToUpdate.addCorrect();
+                if(wrongIncrease > 0) statsToUpdate.addIncorrect();
+              } else {
+                this.birdStatistics.push(new birdStatistic(label, rightIncrease, wrongIncrease));
+                console.log(this.birdStatistics)
+              }
+            }
+          }
+        }
+
         function soundModel(soundData) {
           return {
             label: soundData.label,
@@ -67,6 +99,15 @@
             selected: false,
             markAsCorrectAnswer: false,
             markAsIncorrectAnswer: false,
+            lastPlayedIndex: -1,
+            getNextSound() {
+              // get the next sound based on the last index we played; just cycle through the collection
+              this.lastPlayedIndex = this.lastPlayedIndex + 1;
+              if(this.lastPlayedIndex >= this.sounds.length) {
+                this.lastPlayedIndex = 0;
+              }
+              return this.sounds[this.lastPlayedIndex];
+            },
             toggleSelected() {
               this.selected = !this.selected;
             },
@@ -91,9 +132,12 @@
 
             showAnswerSelections: false,
 
-            playSoundButtonText : "Ok, play me a sound",
+            playSoundButtonText : "Ok, play me a bird call",
 
             status : 'ready', // ready | playingSound
+
+            correctChoice: null,
+            statistics: new statisticsModel(),
 
             checkIfCanStart() {
               this.readyToStart = (this.availableBirdSounds.filter((birdSounds) => birdSounds.selected).length > 1) && this.status == "ready";
@@ -112,29 +156,36 @@
               const birdToUseIndex = getRandomIntInclusive(0, this.birdsToTrainWith.length - 1);
               this.selectedBird = this.birdsToTrainWith[birdToUseIndex];
               console.log(this.selectedBird);
-              const chosenSoundIndex = getRandomIntInclusive(0, this.selectedBird.sounds.length - 1);
-              this.chosenSound = this.selectedBird.sounds[chosenSoundIndex];
+              //const chosenSoundIndex = getRandomIntInclusive(0, this.selectedBird.sounds.length - 1);
+              //this.chosenSound = this.selectedBird.sounds[chosenSoundIndex];
+              this.chosenSound = this.selectedBird.getNextSound();
               console.log(this.chosenSound);
               this.chosenSound.playSound();
               this.showAnswerSelections = true;
               this.status = "playingSound";
               this.checkIfCanStart();
+              this.correctChoice = null;
             },
 
             makeChoice(userSoundChosen) {
+              if(this.status != "playingSound") return;
               // did the selection match the bird sound being played?
               // mark the correct answer with a colour
               // if they clicked the wrong one, then mark that with a colour (to shame them into doing better)
               // stop the sound being played
-              const correctChoice = userSoundChosen.label == this.selectedBird.label;
+              this.correctChoice = userSoundChosen.label == this.selectedBird.label;
               this.selectedBird.markAsCorrectAnswer = true;
-              if(!correctChoice) {
+              if(!this.correctChoice) {
                 userSoundChosen.markAsIncorrectAnswer = true;
+                this.statistics.updateBirdStats(this.selectedBird.label, 0, 1);
+              } else {
+                this.statistics.updateBirdStats(this.selectedBird.label, 1, 0);
               }
+              console.log(this.statistics)
               this.chosenSound.stopSound();
               this.status = "ready";
               this.checkIfCanStart();
-              this.playSoundButtonText = "Play me a different sound!"
+              this.playSoundButtonText = "Play me the next bird call!"
             }
 
 

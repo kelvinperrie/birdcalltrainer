@@ -70,6 +70,28 @@
             <span class="available-sound border-solid border-4 border-white rounded-md" x-text="item.label" @click="makeChoice(item)" :class="[item.markAsIncorrectAnswer ? 'incorrect-answer' : '',item.markAsCorrectAnswer ? 'correct-answer' : '']" ></span>
           </template>
         </div>
+        <div class="choice-feedback choice-feedback-right" x-show="correctChoice === true">Correct!</div>
+        <div class="choice-feedback choice-feedback-wrong" x-show="correctChoice === false">Whoops!</div>
+        <div class="flex justify-center">
+          <table class="table-auto">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Correct</th>
+                <th>Incorrect</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="statLine in statistics.birdStatistics" :key="statLine.label">
+                <tr>
+                  <td x-text="statLine.label"></td>
+                  <td x-text="statLine.correct"></td>
+                  <td x-text="statLine.incorrect"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     <script>
