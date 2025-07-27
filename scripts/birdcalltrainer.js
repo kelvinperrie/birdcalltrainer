@@ -23,15 +23,12 @@
           return {
             birdStatistics : [],
             updateBirdStats(label, rightIncrease, wrongIncrease) {
-              console.log("we're going to update the stats for " + label);
               let statsToUpdate = this.birdStatistics.find(item => item.label == label);
-              console.log(statsToUpdate)
               if(statsToUpdate) {
                 if(rightIncrease > 0) statsToUpdate.addCorrect();
                 if(wrongIncrease > 0) statsToUpdate.addIncorrect();
               } else {
                 this.birdStatistics.push(new birdStatistic(label, rightIncrease, wrongIncrease));
-                console.log(this.birdStatistics)
               }
             }
           }
@@ -128,7 +125,7 @@
 
             chosenSound : null,
 
-            readyToStart : false, // this.birdsToTrainWith.length > 1,
+            readyToStart : function() { return (this.availableBirdSounds.filter((birdSounds) => birdSounds.selected).length > 1) && this.status == "ready" }, // false, // this.birdsToTrainWith.length > 1,
 
             showAnswerSelections: false,
 
@@ -139,12 +136,9 @@
             correctChoice: null,
             statistics: new statisticsModel(),
 
-            checkIfCanStart() {
-              this.readyToStart = (this.availableBirdSounds.filter((birdSounds) => birdSounds.selected).length > 1) && this.status == "ready";
-            },
-
             startTraining() {
               if(this.status != 'ready') {
+                console.log("we're not in the ready state, so unable to play a sound ...")
                 return;
               }
               // 0. reset everything
@@ -155,15 +149,14 @@
               this.birdsToTrainWith = this.availableBirdSounds.filter((birdSounds) => birdSounds.selected);
               const birdToUseIndex = getRandomIntInclusive(0, this.birdsToTrainWith.length - 1);
               this.selectedBird = this.birdsToTrainWith[birdToUseIndex];
-              console.log(this.selectedBird);
+              //console.log(this.selectedBird);
               //const chosenSoundIndex = getRandomIntInclusive(0, this.selectedBird.sounds.length - 1);
               //this.chosenSound = this.selectedBird.sounds[chosenSoundIndex];
               this.chosenSound = this.selectedBird.getNextSound();
-              console.log(this.chosenSound);
+              //console.log(this.chosenSound);
               this.chosenSound.playSound();
               this.showAnswerSelections = true;
               this.status = "playingSound";
-              this.checkIfCanStart();
               this.correctChoice = null;
             },
 
@@ -181,10 +174,8 @@
               } else {
                 this.statistics.updateBirdStats(this.selectedBird.label, 1, 0);
               }
-              console.log(this.statistics)
               this.chosenSound.stopSound();
               this.status = "ready";
-              this.checkIfCanStart();
               this.playSoundButtonText = "Play me the next bird call!"
             }
 
