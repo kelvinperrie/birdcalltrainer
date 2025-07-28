@@ -33,7 +33,7 @@
       Select the bird calls you want to learn to tell apart:
       <div class="flex justify-center space-x-4 items-stretch ">
         <template x-for="item in availableBirdSounds" :key="item.label">
-          <span x-init="item.init()" class="available-sound border-solid border-4 border-gray-500 rounded-md" x-text="item.label" @click="item.toggleSelected();" :class="item.selected ? 'selected' : ''"></span>
+          <span x-init="item.init()" class="available-sound border-solid border-4 border-gray-500 rounded-md flex flex-col justify-center" x-text="item.label" @click="item.toggleSelected();" :class="item.selected ? 'selected' : ''"></span>
         </template>
       </div>
       <div class="mt-10">
@@ -46,7 +46,7 @@
         Pick the bird you think makes this sound:
         <div class="flex justify-center space-x-4 items-stretch">
           <template x-for="item in birdsToTrainWith" :key="item.label">
-            <span class="available-sound border-solid border-4 border-white rounded-md" x-text="item.label" @click="makeChoice(item)" :class="[item.markAsIncorrectAnswer ? 'incorrect-answer' : '',item.markAsCorrectAnswer ? 'correct-answer' : '']" ></span>
+            <span class="available-sound border-solid border-4 border-white rounded-md flex flex-col justify-center" x-text="item.label" @click="makeChoice(item)" :class="[item.markAsIncorrectAnswer ? 'incorrect-answer' : '',item.markAsCorrectAnswer ? 'correct-answer' : '']" ></span>
           </template>
         </div>
         <div class="min-h-15">
