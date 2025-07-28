@@ -93,7 +93,7 @@
           return {
             label: birdSoundsData.label,
             sounds: birdSoundsData.sounds.map(d => new soundModel(d)),
-            selected: false,
+            selected: true,
             markAsCorrectAnswer: false,
             markAsIncorrectAnswer: false,
             lastPlayedIndex: -1,
