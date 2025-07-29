@@ -30,6 +30,26 @@ header {
   bottom: 2px;
 }
 
+.available-sound{
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding: .5em 1em;
+  background-color: aliceblue;
+  cursor: pointer;
+}
+.selected {
+  border-color: yellow;
+}
+.incorrect-answer {
+  border-color: red;
+}
+.correct-answer {
+  border-color: green;
+}
+button {
+  cursor: pointer;
+}
+
 .choice-feedback {
   font-size: 25px;
 }
@@ -39,4 +59,3 @@ header {
 .choice-feedback-wrong {
   color: red;
 }
-

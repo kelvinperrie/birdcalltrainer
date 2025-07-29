@@ -16,27 +16,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/main.css" type="text/css">
-    <style>
-      .available-sound{
-        margin-top: 1em;
-        margin-bottom: 1em;
-        padding: .5em 1em;
-        background-color: aliceblue;
-        cursor: pointer;
-      }
-      .selected {
-        border-color: yellow;
-      }
-      .incorrect-answer {
-        border-color: red;
-      }
-      .correct-answer {
-        border-color: green;
-      }
-      button {
-        cursor: pointer;
-      }
-    </style>
     <title>NZ Bird Call Trainer</title>
     <script defer src="scripts/soundconfig.js"></script>
     <script defer src="scripts/alpine.js"></script>
@@ -54,37 +33,39 @@
       Select the bird calls you want to learn to tell apart:
       <div class="flex justify-center space-x-4 items-stretch ">
         <template x-for="item in availableBirdSounds" :key="item.label">
-          <span x-init="item.init()" class="available-sound border-solid border-4 border-gray-500 rounded-md" x-text="item.label" @click="item.toggleSelected(); checkIfCanStart()" :class="item.selected ? 'selected' : ''"></span>
+          <span x-init="item.init()" class="available-sound border-solid border-4 border-gray-500 rounded-md flex flex-col justify-center" x-text="item.label" @click="item.toggleSelected();" :class="item.selected ? 'selected' : ''"></span>
         </template>
       </div>
       <div class="mt-10">
-        <button @click="startTraining()" x-bind:disabled="!readyToStart" class="bg-blue-500 enabled:hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-500" x-text="playSoundButtonText">!!!!</button>
+        <button @click="startTraining()" x-bind:disabled="!readyToStart()" class="bg-blue-500 enabled:hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-500" x-text="playSoundButtonText">!!!!</button>
         <br/>
-        <span x-show="availableBirdSounds.filter((birdSounds) => birdSounds.selected).length < 2">(select at least two birds to start!)</span>
+        <span x-show="!readyToStart()">(select at least two birds to start!)</span>
         <br/>
       </div>
       <div x-show="showAnswerSelections" class="mt-10">
         Pick the bird you think makes this sound:
         <div class="flex justify-center space-x-4 items-stretch">
           <template x-for="item in birdsToTrainWith" :key="item.label">
-            <span class="available-sound border-solid border-4 border-white rounded-md" x-text="item.label" @click="makeChoice(item)" :class="[item.markAsIncorrectAnswer ? 'incorrect-answer' : '',item.markAsCorrectAnswer ? 'correct-answer' : '']" ></span>
+            <span class="available-sound border-solid border-4 border-white rounded-md flex flex-col justify-center" x-text="item.label" @click="makeChoice(item)" :class="[item.markAsIncorrectAnswer ? 'incorrect-answer' : '',item.markAsCorrectAnswer ? 'correct-answer' : '']" ></span>
           </template>
         </div>
-        <div class="choice-feedback choice-feedback-right" x-show="correctChoice === true">Correct!</div>
-        <div class="choice-feedback choice-feedback-wrong" x-show="correctChoice === false">Whoops!</div>
+        <div class="min-h-15">
+          <div class="choice-feedback choice-feedback-right" x-show="correctChoice === true">Correct!</div>
+          <div class="choice-feedback choice-feedback-wrong" x-show="correctChoice === false">Whoops!</div>
+        </div>
         <div class="flex justify-center">
           <table class="table-auto">
             <thead>
               <tr>
-                <th></th>
-                <th>Correct</th>
-                <th>Incorrect</th>
+                <th class="p-2 text-right">Your stats so far ...</th>
+                <th class="px-2">Correct</th>
+                <th class="px-2">Incorrect</th>
               </tr>
             </thead>
             <tbody>
               <template x-for="statLine in statistics.birdStatistics" :key="statLine.label">
                 <tr>
-                  <td x-text="statLine.label"></td>
+                  <td class="p-2 text-right" x-text="statLine.label"></td>
                   <td x-text="statLine.correct"></td>
                   <td x-text="statLine.incorrect"></td>
                 </tr>
